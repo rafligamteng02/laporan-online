@@ -3,30 +3,30 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Laporan;
+use App\Models\LaporanOnline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class LaporanApiController extends Controller
 {
-    // GET /api/laporans
+    // GET /api/laporan-online
     public function index()
     {
-        return response()->json(Laporan::all(), 200);
+        return response()->json(LaporanOnline::all(), 200);
     }
 
-    // POST /api/laporans
+    // POST /api/laporan-online
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required',
-            'alamat' => 'required',
-            'deskripsi' => 'required',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['nama', 'alamat', 'deskripsi', 'tanggal']);
 
         if ($request->hasFile('foto')) {
             $fileName = time().'_'.$request->foto->getClientOriginalName();
@@ -34,19 +34,19 @@ class LaporanApiController extends Controller
             $data['foto'] = $fileName;
         }
 
-        $laporan = Laporan::create($data);
+        $laporan = LaporanOnline::create($data);
 
         return response()->json([
             'status' => true,
-            'message' => 'Laporan berhasil ditambahkan',
+            'message' => 'Laporan online berhasil dibuat',
             'data' => $laporan
         ], 201);
     }
 
-    // GET /api/laporans/{id}
+    // GET /api/laporan-online/{id}
     public function show($id)
     {
-        $laporan = Laporan::find($id);
+        $laporan = LaporanOnline::find($id);
 
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
@@ -55,24 +55,24 @@ class LaporanApiController extends Controller
         return response()->json(['status' => true, 'data' => $laporan], 200);
     }
 
-    // PUT /api/laporans/{id}
+    // PUT /api/laporan-online/{id}
     public function update(Request $request, $id)
     {
-        $laporan = Laporan::find($id);
+        $laporan = LaporanOnline::find($id);
 
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
 
         $request->validate([
-            'nama' => 'required',
-            'alamat' => 'required',
-            'deskripsi' => 'required',
+            'nama' => 'required|string|max:255',
+            'alamat' => 'required|string|max:255',
+            'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048'
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['nama', 'alamat', 'deskripsi', 'tanggal']);
 
         if ($request->hasFile('foto')) {
             if ($laporan->foto && Storage::exists('public/foto/'.$laporan->foto)) {
@@ -87,15 +87,15 @@ class LaporanApiController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Laporan berhasil diperbarui',
+            'message' => 'Laporan online berhasil diperbarui',
             'data' => $laporan
         ], 200);
     }
 
-    // DELETE /api/laporans/{id}
+    // DELETE /api/laporan-online/{id}
     public function destroy($id)
     {
-        $laporan = Laporan::find($id);
+        $laporan = LaporanOnline::find($id);
 
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
@@ -107,6 +107,6 @@ class LaporanApiController extends Controller
 
         $laporan->delete();
 
-        return response()->json(['status' => true, 'message' => 'Laporan berhasil dihapus'], 200);
+        return response()->json(['status' => true, 'message' => 'Laporan online berhasil dihapus'], 200);
     }
 }

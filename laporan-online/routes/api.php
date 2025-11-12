@@ -5,5 +5,5 @@ use App\Http\Controllers\Api\LaporanApiController;
 
 Route::get('/health', fn() => response()->json(['status' => 'ok']));
 
-// API CRUD laporan
-Route::apiResource('laporans', LaporanApiController::class);
+// CRUD API laporan online
+Route::apiResource('laporan-online', LaporanApiController::class);
