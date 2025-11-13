@@ -9,7 +9,7 @@ class LaporanOnline extends Model
 {
     use HasFactory;
 
-    protected $table = 'laporan_onlines'; // atau nama tabel kamu di database
+    protected $table = 'laporan_onlines'; // atau 'laporans' jika itu nama tabel kamu
 
     protected $fillable = [
         'nama',
@@ -17,5 +17,6 @@ class LaporanOnline extends Model
         'deskripsi',
         'tanggal',
         'foto',
+        'status',
     ];
 }

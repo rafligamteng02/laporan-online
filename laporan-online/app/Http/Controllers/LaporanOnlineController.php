@@ -17,11 +17,9 @@ class LaporanOnlineController extends Controller
     public function show($id)
     {
         $laporan = LaporanOnline::find($id);
-
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
-
         return response()->json(['status' => true, 'data' => $laporan]);
     }
 
@@ -36,7 +34,6 @@ class LaporanOnlineController extends Controller
         ]);
 
         $data = $request->all();
-
         if ($request->hasFile('foto')) {
             $fileName = time() . '_' . $request->foto->getClientOriginalName();
             $request->foto->storeAs('public/foto', $fileName);
@@ -44,18 +41,12 @@ class LaporanOnlineController extends Controller
         }
 
         $laporan = LaporanOnline::create($data);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Laporan berhasil ditambahkan',
-            'data' => $laporan
-        ]);
+        return response()->json(['status' => true, 'message' => 'Laporan berhasil ditambahkan', 'data' => $laporan]);
     }
 
     public function update(Request $request, $id)
     {
         $laporan = LaporanOnline::find($id);
-
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
@@ -70,44 +61,29 @@ class LaporanOnlineController extends Controller
         ]);
 
         $data = $request->except(['_method']);
-
         if ($request->hasFile('foto')) {
             if ($laporan->foto && Storage::exists('public/foto/' . $laporan->foto)) {
                 Storage::delete('public/foto/' . $laporan->foto);
             }
-
             $fileName = time() . '_' . $request->foto->getClientOriginalName();
             $request->foto->storeAs('public/foto', $fileName);
             $data['foto'] = $fileName;
         }
-        return response()->json($data);
 
         $laporan->update($data);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Laporan berhasil diperbarui',
-            'data' => $laporan
-        ]);
+        return response()->json(['status' => true, 'message' => 'Laporan berhasil diperbarui', 'data' => $laporan]);
     }
 
     public function destroy($id)
     {
         $laporan = LaporanOnline::find($id);
-
         if (!$laporan) {
             return response()->json(['status' => false, 'message' => 'Data tidak ditemukan'], 404);
         }
-
         if ($laporan->foto && Storage::exists('public/foto/' . $laporan->foto)) {
             Storage::delete('public/foto/' . $laporan->foto);
         }
-
         $laporan->delete();
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Laporan berhasil dihapus'
-        ]);
+        return response()->json(['status' => true, 'message' => 'Laporan berhasil dihapus']);
     }
 }
